@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.renatus.testingwithmockwebsever.viewModel.MovieCharacterViewModel
 import org.awaitility.Awaitility
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.lifecycle.ViewModelProvider
 import androidx.test.InstrumentationRegistry
 import androidx.test.core.app.ApplicationProvider
 import com.renatus.testingwithmockwebsever.R
@@ -65,7 +66,7 @@ class MainActivityInstrumentationTest {
     @Throws(Exception::class)
     fun setUp() {
         mockWebServer = MockWebServer()
-        mockWebServer!!.setDispatcher(dispatcher)
+        mockWebServer!!.dispatcher = dispatcher
         mockWebServer!!.start()
         ApiUrls.BASE_URL = mockWebServer!!.url("/").toString()
         activityScenario = ActivityScenario.launch(MainActivity::class.java)
@@ -74,12 +75,8 @@ class MainActivityInstrumentationTest {
     @Test
     fun checkTextFieldsWithAPIResponse() {
         activityScenario!!.onActivity { activity: MainActivity ->
-            val movieDetailsViewModel = ViewModelProviders.of(activity).get(
-                MovieDetailsViewModel::class.java
-            )
-            val movieCharacterViewModel = ViewModelProviders.of(activity).get(
-                MovieCharacterViewModel::class.java
-            )
+            val movieDetailsViewModel = ViewModelProvider(activity)[MovieDetailsViewModel::class.java]
+            val movieCharacterViewModel = ViewModelProvider(activity)[MovieCharacterViewModel::class.java]
             Awaitility.await().atMost(5, TimeUnit.SECONDS).until {
                 (movieDetailsViewModel.movieDetails?.value != null
                         && movieCharacterViewModel.movieCharacterDetails?.value != null)

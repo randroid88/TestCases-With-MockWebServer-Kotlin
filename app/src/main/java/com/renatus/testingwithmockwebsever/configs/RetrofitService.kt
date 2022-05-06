@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitService {
     @JvmStatic
-    fun <S> createService(serviceClass: Class<S>?): S {
+    fun <S> createService(serviceClass: Class<S>): S {
         val retrofit = Retrofit.Builder()
             .baseUrl(ApiUrls.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
